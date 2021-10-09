@@ -10,7 +10,7 @@ import { UserPlus } from "react-feather";
 import { posts as PostData } from "../store/posts";
 import { users } from "../store/users";
 import { TopicInterface } from "../types/topic";
-import { topics } from "../store/topics";
+// import { topics } from "../store/topics";
 import FriendInterface from "../types/user";
 import axios from "axios";
 
@@ -24,7 +24,7 @@ export default function Posts() {
 
   const [recommendedFriends, setRecommendedFriends] = useState<Array<FriendInterface>>([]);
 
-  const [recommendedTopics, setRecommendedTopics] = useState<Array<TopicInterface>>([]);
+  const [recommendedTopics] = useState<Array<TopicInterface>>([]);
 
   const [posts, updatePosts] = useState(PostData);
 
@@ -114,7 +114,7 @@ export default function Posts() {
     }
   }
 
-  const recommendTopics = async () => { }
+  // const recommendTopics = async () => { }
 
   return (
     <>
