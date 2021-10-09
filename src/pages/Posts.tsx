@@ -12,6 +12,7 @@ import { users } from "../store/users";
 import { TopicInterface } from "../types/topic";
 import { topics } from "../store/topics";
 import FriendInterface from "../types/user";
+import axios from "axios";
 
 interface PostState {
   username: string
@@ -27,11 +28,11 @@ export default function Posts() {
 
   const [posts, updatePosts] = useState(PostData);
 
-  const handleUpdatePost = (newPost: PostInterface) => {
+  const handleUpdatePost = async (newPost: PostInterface) => {
     let index = posts.findIndex((post) => post.id === newPost.id)
     posts.splice(index, 1, newPost)
     updatePosts([...posts]);
-    recommendFriendsAndTopics();
+    await recommendFriendsAndTopics();
   }
 
   const defaultUser: LoggedInUserInterface = {
@@ -42,7 +43,7 @@ export default function Posts() {
 
   const [user, updateUser] = useState(defaultUser);
 
-  const updateUserFriendsFollowing = (friend: UserInterface) => {
+  const updateUserFriendsFollowing = async (friend: UserInterface) => {
     let index = user.friendsFollowing.findIndex((user) => user === friend.name)
     if (index > -1) {
       user.friendsFollowing.splice(index, 1);
@@ -50,10 +51,10 @@ export default function Posts() {
       user.friendsFollowing.push(friend.name);
     }
     updateUser({ ...user });
-    recommendFriendsAndTopics();
+    await recommendFriendsAndTopics();
   }
 
-  const updateUserTopicsFollowing = (topic: TopicInterface) => {
+  const updateUserTopicsFollowing = async (topic: TopicInterface) => {
     let index = user.topicsFollowing.findIndex((user) => user === topic)
     if (index > -1) {
       user.topicsFollowing.splice(index, 1);
@@ -61,36 +62,59 @@ export default function Posts() {
       user.topicsFollowing.push(topic);
     }
     updateUser({ ...user });
-    recommendFriendsAndTopics();
+    await recommendFriendsAndTopics();
   }
 
-  const recommendFriendsAndTopics = () => {
-    // friends
-    let newFriendsRecommendation = [
-      users[rand(users.length)],
-      users[rand(users.length)],
-      users[rand(users.length)],
-      users[rand(users.length)],
-      users[rand(users.length)]
-    ]
-    setRecommendedFriends([...newFriendsRecommendation]);
+  const recommendFriendsAndTopics = async () => {
+    // setRecommendedFriends([...newFriendsRecommendation]);
+    // setRecommendedTopics([...newTopicsRecommendation]);
 
-    // friends
-    let newTopicsRecommendation = [
-      topics[rand(topics.length)],
-      topics[rand(topics.length)],
-      topics[rand(topics.length)],
-      topics[rand(topics.length)],
-      topics[rand(topics.length)]
-    ]
-    console.log(newTopicsRecommendation)
-    setRecommendedTopics([...newTopicsRecommendation]);
-
+    await recommendFriends();
   }
 
-  const rand = (len: number) => {
-    return Math.floor(Math.random() * len);
+  const recommendFriends = async () => {
+    let data_pool: any = [];
+    users.forEach((user: UserInterface) => {
+      data_pool.push({ id: user.id, tags: user.topics });
+    });
+    let interest_score: any = [];
+    posts.forEach((post: PostInterface) => {
+      interest_score.push({ id: post.id, score: post.claps });
+    });
+    let current_data: any = [];
+    posts.forEach((post: PostInterface) => {
+      current_data.push({ id: post.id, tags: post.tags });
+    });
+
+    let reqData = {
+      current_data,
+      interest_score,
+      data_pool,
+      number_of_recommendations: 5
+    }
+
+    let resp = await axios.post(
+      'https://cors-everywhere.herokuapp.com/https://chirp-litmus-api.herokuapp.com/', reqData
+    );
+
+    if (resp.data.status === 'success') {
+      let recommendedUserIds: string[] = resp.data.data;
+
+      console.log(recommendedUserIds);
+      let newFriendsRecommendation: UserInterface[] = [];
+
+      recommendedUserIds.forEach((id: string) => {
+        let recommendedFriend = users.find((user: UserInterface) => user.id === parseInt(id))
+        if (recommendedFriend !== undefined)
+          newFriendsRecommendation.push(recommendedFriend)
+      })
+
+      setRecommendedFriends([...newFriendsRecommendation]);
+
+    }
   }
+
+  const recommendTopics = async () => { }
 
   return (
     <>
