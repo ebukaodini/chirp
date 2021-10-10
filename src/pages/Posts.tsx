@@ -9,7 +9,7 @@ import Post from "../components/post";
 import { UserPlus } from "react-feather";
 import { posts as PostData } from "../store/posts";
 import { users } from "../store/users";
-import { TopicInterface } from "../types/topic";
+// import { TopicInterface } from "../types/topic";
 // import { topics } from "../store/topics";
 import FriendInterface from "../types/user";
 import axios from "axios";
@@ -24,7 +24,7 @@ export default function Posts() {
 
   const [recommendedFriends, setRecommendedFriends] = useState<Array<FriendInterface>>([]);
 
-  const [recommendedTopics] = useState<Array<TopicInterface>>([]);
+  // const [recommendedTopics] = useState<Array<TopicInterface>>([]);
 
   const [posts, updatePosts] = useState(PostData);
 
@@ -54,16 +54,16 @@ export default function Posts() {
     await recommendFriendsAndTopics();
   }
 
-  const updateUserTopicsFollowing = async (topic: TopicInterface) => {
-    let index = user.topicsFollowing.findIndex((user) => user === topic)
-    if (index > -1) {
-      user.topicsFollowing.splice(index, 1);
-    } else {
-      user.topicsFollowing.push(topic);
-    }
-    updateUser({ ...user });
-    await recommendFriendsAndTopics();
-  }
+  // const updateUserTopicsFollowing = async (topic: TopicInterface) => {
+  //   let index = user.topicsFollowing.findIndex((user) => user === topic)
+  //   if (index > -1) {
+  //     user.topicsFollowing.splice(index, 1);
+  //   } else {
+  //     user.topicsFollowing.push(topic);
+  //   }
+  //   updateUser({ ...user });
+  //   await recommendFriendsAndTopics();
+  // }
 
   const recommendFriendsAndTopics = async () => {
     // setRecommendedFriends([...newFriendsRecommendation]);
@@ -132,7 +132,7 @@ export default function Posts() {
 
           <div className='row'>
 
-            <section className='__posts col-lg-8 col-md-8 col-12 py-4'>
+            <section className='__posts col-lg-8 col-md-8 col-12 order-md-first order-last py-4'>
 
               <h1 className='text-dark mb-4'>Posts</h1>
 
@@ -171,12 +171,13 @@ export default function Posts() {
                       </div>
                     )) :
                     <div className='py-3'>
-                      No recommended friend
+                      No recommended friend. <br />
+                      Interact with the posts to get suggestions.
                     </div>
                 }
               </div>
 
-              <h3 className='text-dark'>Recommended Topics</h3>
+              {/* <h3 className='text-dark'>Recommended Topics</h3>
               <div className='__recommended_topics'>
                 {
                   recommendedTopics.length > 0 ?
@@ -202,7 +203,7 @@ export default function Posts() {
                       No recommended topic
                     </div>
                 }
-              </div>
+              </div> */}
 
             </section>
 
