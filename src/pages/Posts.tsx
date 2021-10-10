@@ -13,6 +13,7 @@ import { users } from "../store/users";
 // import { topics } from "../store/topics";
 import FriendInterface from "../types/user";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 interface PostState {
   username: string
@@ -123,7 +124,9 @@ export default function Posts() {
 
         <header className='__header py-3 w-100 bg-white shadow-sm d-flex'>
           <div className='container d-flex align-items-center justify-content-between'>
-            <h1 className='text-primary'>Chirp.</h1>
+            <h1 className='text-primary'>
+              <Link to='/' className='text-decoration-none'>Chirp.</Link>
+            </h1>
             <NameIcon username={user.username} />
           </div>
         </header>
