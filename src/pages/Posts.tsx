@@ -9,8 +9,6 @@ import Post from "../components/post";
 import { UserPlus } from "react-feather";
 import { posts as PostData } from "../store/posts";
 import { users } from "../store/users";
-// import { TopicInterface } from "../types/topic";
-// import { topics } from "../store/topics";
 import FriendInterface from "../types/user";
 import axios from "axios";
 import { Link } from "react-router-dom";
